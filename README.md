@@ -14,7 +14,7 @@ Todo:
     4. Work on the Ryu and mininet topology. 
 
 How to commit: 
-**Don't comit directly to the master branch. 
+**Don't comit directly to the main branch. 
 Before you commit, create a feature branch from master for example svm_feature and then work on the changes and push to the feature branch. Create a PR from the feature branch and master. 
 
 
