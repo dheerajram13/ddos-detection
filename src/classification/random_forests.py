@@ -11,6 +11,7 @@ class MachineLearning():
         print("Loading dataset ...")
         
         self.flow_dataset = pd.read_csv('../../data/NF-UNSW-NB15.csv')
+        self.flow_dataset = self.flow_dataset.head(400000)
 
         self.flow_dataset.iloc[:, 0] = self.flow_dataset.iloc[:, 0].str.replace('.', '')
         self.flow_dataset.iloc[:, 2] = self.flow_dataset.iloc[:, 2].str.replace('.', '')
@@ -23,7 +24,7 @@ class MachineLearning():
 
         y_flow = self.flow_dataset.iloc[:, -1].values
 
-        X_flow_train, X_flow_test, y_flow_train, y_flow_test = train_test_split(X_flow, y_flow, test_size=0.25, random_state=0)
+        X_flow_train, X_flow_test, y_flow_train, y_flow_test = train_test_split(X_flow, y_flow, test_size=0.3, random_state=0)
 
         classifier = RandomForestClassifier(n_estimators=n_estimators, criterion=criterion, max_depth=max_depth, random_state=0)
         flow_model = classifier.fit(X_flow_train, y_flow_train)

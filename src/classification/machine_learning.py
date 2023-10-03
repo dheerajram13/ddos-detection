@@ -1,10 +1,10 @@
 from datetime import datetime
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
@@ -15,6 +15,7 @@ class MachineLearning():
         print("Loading dataset ...")
 
         self.flow_dataset = pd.read_csv('../../data/NF-UNSW-NB15.csv')
+        self.flow_dataset = self.flow_dataset.head(400000)
 
         self.flow_dataset.iloc[:, 0] = self.flow_dataset.iloc[:, 0].str.replace('.', '')
         self.flow_dataset.iloc[:, 2] = self.flow_dataset.iloc[:, 2].str.replace('.', '')
@@ -24,7 +25,7 @@ class MachineLearning():
 
         self.y_flow = self.flow_dataset.iloc[:, -1].values
 
-        self.X_flow_train, self.X_flow_test, self.y_flow_train, self.y_flow_test = train_test_split(self.X_flow, self.y_flow, test_size=0.25, random_state=0)
+        self.X_flow_train, self.X_flow_test, self.y_flow_train, self.y_flow_test = train_test_split(self.X_flow, self.y_flow, test_size=0.3, random_state=0)
 
     def RF(self):
 
@@ -37,9 +38,17 @@ class MachineLearning():
     def NB(self):
 
         print("------------------------------------------------------------------------------")
-        print("NAIVE-BAYES ...")
+        print("NAIVE BAYES ...")
 
         self.classifier = GaussianNB()
+        self.Confusion_matrix()
+    
+    def SVM(self):
+
+        print("------------------------------------------------------------------------------")
+        print("SUPPORT VECTOR MACHINE ...")
+        
+        self.classifier = SVC(kernel='rbf', random_state=0)
         self.Confusion_matrix()
 
     def Confusion_matrix(self):
@@ -71,6 +80,11 @@ def main():
 
     start = datetime.now()
     ml.NB()
+    end = datetime.now()
+    print("LEARNING and PREDICTING Time: ", (end-start))
+
+    start = datetime.now()
+    ml.SVM()
     end = datetime.now()
     print("LEARNING and PREDICTING Time: ", (end-start))
 
