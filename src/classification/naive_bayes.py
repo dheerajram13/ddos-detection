@@ -10,7 +10,7 @@ class MachineLearning():
         
         print("Loading dataset ...")
         
-        self.flow_dataset = pd.read_csv('/content/drive/MyDrive/COMS6200/NF-UNSW-NB15.csv')
+        self.flow_dataset = pd.read_csv('../../data/NF-UNSW-NB15.csv')
 
         self.flow_dataset.iloc[:, 0] = self.flow_dataset.iloc[:, 0].str.replace('.', '')
         self.flow_dataset.iloc[:, 2] = self.flow_dataset.iloc[:, 2].str.replace('.', '')
