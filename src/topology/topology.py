@@ -1,93 +1,49 @@
 from mininet.topo import Topo
 from mininet.net import Mininet
-from mininet.node import RemoteController
 from mininet.link import TCLink
 from mininet.log import setLogLevel
 from mininet.cli import CLI
+from mininet.node import OVSKernelSwitch, RemoteController
 
+class CustomTopology(Topo):
+    """
+    Custom Mininet topology class for a simple network.
+    """
 
-class MyTopology(Topo):
     def build(self):
-        
-        s1 = self.addSwitch( 's1')
+        # Create switches
+        switches = []
+        for switch_id in range(1, 7):
+            switch_name = 's{}'.format(switch_id)
+            switch = self.addSwitch(switch_name, cls=OVSKernelSwitch, protocols='OpenFlow13')
+            switches.append(switch)
 
-        h1 = self.addHost( 'h1')
-        h2 = self.addHost( 'h2')
-        h3 = self.addHost( 'h3')    
+        # Create hosts and connect them to switches
+        for switch_id, switch in enumerate(switches, start=1):
+            for host_id in range(1, 4):
+                host_name = 'h{}_{}'.format(switch_id, host_id)
+                host_ip = "10.0.0.{}/24".format((switch_id - 1) * 3 + host_id)
+                host_mac = "00:00:00:00:00:{:02x}".format((switch_id - 1) * 3 + host_id)
+                host = self.addHost(host_name, cpu=1.0/20, mac=host_mac, ip=host_ip)
+                self.addLink(host, switch)
 
-        s2 = self.addSwitch( 's2')
+        # Connect switches in a linear fashion
+        for i in range(len(switches) - 1):
+            self.addLink(switches[i], switches[i + 1])
 
-        h4 = self.addHost( 'h4')
-        h5 = self.addHost( 'h5')
-        h6 = self.addHost( 'h6')
-
-        s3 = self.addSwitch( 's3' )
-
-        h7 = self.addHost( 'h7')
-        h8 = self.addHost( 'h8')
-        h9 = self.addHost( 'h9')
-
-        s4 = self.addSwitch( 's4')
-
-        h10 = self.addHost( 'h10' )
-        h11 = self.addHost( 'h11' )
-        h12 = self.addHost( 'h12')
-
-        s5 = self.addSwitch( 's5')
-
-        h13 = self.addHost( 'h13')
-        h14 = self.addHost( 'h14', )
-        h15 = self.addHost( 'h15' )
-
-        s6 = self.addSwitch( 's6' )
-
-        h16 = self.addHost( 'h16')
-        h17 = self.addHost( 'h17')
-        h18 = self.addHost( 'h18')
-
-        # Add links
-
-        self.addLink( h1, s1 )
-        self.addLink( h2, s1 )
-        self.addLink( h3, s1 )
-
-        self.addLink( h4, s2 )
-        self.addLink( h5, s2 )
-        self.addLink( h6, s2 )
-
-        self.addLink( h7, s3 )
-        self.addLink( h8, s3 )
-        self.addLink( h9, s3 )
-
-        self.addLink( h10, s4 )
-        self.addLink( h11, s4 )
-        self.addLink( h12, s4 )
-
-        self.addLink( h13, s5 )
-        self.addLink( h14, s5 )
-        self.addLink( h15, s5 )
-
-        self.addLink( h16, s6 )
-        self.addLink( h17, s6 )
-        self.addLink( h18, s6 )
-
-        self.addLink( s1, s2 )
-        self.addLink( s2, s3 )
-        self.addLink( s3, s4 )
-        self.addLink( s4, s5 )
-        self.addLink( s5, s6 )
-
-def createNetwork():
-
-    topo = MyTopology()
-    c1 = RemoteController('c0', ip='127.0.0.1', port=6633)
-    net = Mininet(topo=topo, link=TCLink, controller=c1)
+def startCustomNetwork():
+    """
+    Start the Mininet network with the custom topology
+    """
+    
+    setLogLevel('info')
+    topo = CustomTopology()
+    c0 = RemoteController('c0', ip='192.168.0.101', port=6653)
+    net = Mininet(topo=topo, link=TCLink, controller=c0)
 
     net.start()
     CLI(net)
     net.stop()
 
 if __name__ == '__main__':
-    setLogLevel( 'info' )
-    createNetwork()
-    
+    startCustomNetwork()
