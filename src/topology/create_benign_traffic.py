@@ -1,8 +1,7 @@
-from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.log import setLogLevel
-from mininet.node import OVSKernelSwitch, RemoteController
+from mininet.node import RemoteController
 from topology.topology import CustomTopology
 from time import sleep
 from datetime import datetime
@@ -10,9 +9,9 @@ from random import randrange, choice
 
 def generateRandomIP():
     """
-    Generate a random IP address in the range 10.0.0.21 to 10.0.0.38.
+    Generate a random IP address in the range 10.0.0.1 to 10.0.0.18.
     """
-    ip = "10.0.0.{}".format(randrange(21, 39))
+    ip = "10.0.0.{}".format(randrange(1, 19))
     return ip
 
 def startNetwork():
@@ -43,12 +42,12 @@ def startNetwork():
             print("Generating traffic from {} to {} ...".format(src.name, dst_host_name))
 
             src.cmd("ping {} -c 100 &".format(dst_ip))
-            src.cmd("iperf -p 5050 -c 10.0.0.21")
-            src.cmd("iperf -p 5051 -u -c 10.0.0.21")
+            src.cmd("iperf -p 5050 -c 10.0.0.1")
+            src.cmd("iperf -p 5051 -u -c 10.0.0.1")
 
             print("Downloading files from h1 to {} ...".format(src.name))
-            src.cmd("wget http://10.0.0.21/index.html")
-            src.cmd("wget http://10.0.0.21/test.zip")
+            src.cmd("wget http://10.0.0.1/index.html")
+            src.cmd("wget http://10.0.0.1/test.zip")
 
         # Clean up downloaded files
         for host in hosts:

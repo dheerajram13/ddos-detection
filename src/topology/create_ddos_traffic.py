@@ -56,7 +56,7 @@ def startNetwork():
     dst_ip = ipGenerator()
     performAttack('-1', dst_ip)  # ICMP (Ping) Flood
     performAttack('-2', dst_ip)  # UDP Flood
-    performAttack('-S', '10.0.0.21')  # TCP-SYN Flood
+    performAttack('-S', '10.0.0.1')  # TCP-SYN Flood
     performAttack('-1 -a', dst_ip)  # LAND Attack
 
     print("--------------------------------------------------------------------------------")
