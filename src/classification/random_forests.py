@@ -1,12 +1,14 @@
-from datetime import datetime
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 
+from helpers import DATASET_SIZE
+from datetime import datetime
+
 class RandomFClassifier:
 
-    def __init__(self, dataset_path, dataset_size=400000):
+    def __init__(self, dataset_path, dataset_size=DATASET_SIZE):
         print("Loading dataset ...")
         self.flow_dataset = pd.read_csv(dataset_path)
         self.flow_dataset.iloc[:, 0] = self.flow_dataset.iloc[:, 0].str.replace('.', '')
@@ -65,13 +67,16 @@ class RandomFClassifier:
 
 
 def main():
-    dataset_path = '../../data/NF-UNSW-NB15.csv'
+    dataset_path = 'data/NF-UNSW-NB15.csv'
     start = datetime.now()
     rf_classifier = RandomFClassifier(dataset_path)
     rf_classifier.flow_training()
-    n_estimators_values = [10, 50, 100]
-    criterion_values = ['gini', 'entropy']
-    max_depth_values = [None, 10, 20]
+    # n_estimators_values = [10, 50, 100]
+    n_estimators_values = [100]
+    # criterion_values = ['gini', 'entropy']
+    criterion_values = ['entropy']
+    # max_depth_values = [None, 10, 20]
+    max_depth_values = [20]
 
     best_f1 = 0  
     best_params = None
@@ -85,11 +90,13 @@ def main():
                     best_params = (n_estimators, criterion, max_depth)
     
     end = datetime.now()
+    print("Random Forests")
+    print("------------------------------------------------------------------------------")
     print("Training time: ", (end-start)) 
     print("Best Parameter Combination (n_estimators, criterion, max_depth):", best_params)
     print("Best F1 Score:", best_f1)
-    end = datetime.now()
-    print("Training time: ", (end - start))
+    # end = datetime.now()
+    # print("Training time: ", (end - start))
 
 if __name__ == "__main__":
     main()
