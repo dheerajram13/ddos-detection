@@ -1,14 +1,18 @@
+import joblib
 from ryu.controller import ofp_event
 from ryu.controller.handler import MAIN_DISPATCHER, DEAD_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.lib import hub
-import switch
-from datetime import datetime
-import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
+import pandas as pd
+
+import switch
+from datetime import datetime
+
+
 
 class FlowMonitor(switch.SimpleSwitch13):
     """
@@ -174,7 +178,9 @@ class FlowMonitor(switch.SimpleSwitch13):
             X_predict_flow = X_predict_flow.astype('float64')
 
             y_flow_pred = self.flow_model.predict(X_predict_flow)
-
+            trained_model = joblib.load("./random_forest.joblib")
+            res = trained_model.predict(X_predict_flow)
+            print("result: ", res)
             legitimate_traffic = 0
             ddos_traffic = 0
 

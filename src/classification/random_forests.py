@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -71,6 +72,8 @@ def main():
     start = datetime.now()
     rf_classifier = RandomFClassifier(dataset_path)
     rf_classifier.flow_training()
+    # Save the training data
+    joblib.dump(rf_classifier, "./rf_trained_data.joblib")
     # n_estimators_values = [10, 50, 100]
     n_estimators_values = [100]
     # criterion_values = ['gini', 'entropy']
