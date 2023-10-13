@@ -19,8 +19,10 @@ class RandomFClassifier:
     def flow_training(self, n_estimators=10, criterion='entropy', max_depth=None):
         print("Flow Training with n_estimators={}, criterion={}, max_depth={} ...".format(n_estimators, criterion, max_depth))
 
-        X_flow = self.flow_dataset.iloc[:, :-1].values.astype('float64')
+        X_flow = self.flow_dataset.iloc[:, [0, 8, 11, 13]].values.astype('float64')
         y_flow = self.flow_dataset.iloc[:, -1].values
+
+        print("y_flow:", y_flow)
 
         X_flow_train, X_flow_test, y_flow_train, y_flow_test = train_test_split(X_flow, y_flow, test_size=0.3, random_state=0)
 
