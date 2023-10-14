@@ -150,9 +150,9 @@ class FlowMonitor(switch.SimpleSwitch13):
 
         y_flow = flow_dataset.iloc[:, -1].values
 
-        X_flow_train, X_flow_test, y_flow_train, y_flow_test = train_test_split(X_flow, y_flow, test_size=0.25, random_state=0)
+        X_flow_train, X_flow_test, y_flow_train, y_flow_test = train_test_split(X_flow, y_flow, test_size=0.3, random_state=0)
 
-        classifier = RandomForestClassifier(n_estimators=10, criterion="entropy", random_state=0)
+        classifier = RandomForestClassifier(n_estimators=100, criterion="entropy", max_depth=20, random_state=0)
         self.flow_model = classifier.fit(X_flow_train, y_flow_train)
 
         y_flow_pred = self.flow_model.predict(X_flow_test)
