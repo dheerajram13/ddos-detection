@@ -1,4 +1,4 @@
-# ddos-detection
+# DDOS-detection
 DDOS Detection using ML 
 
 Installation steps:
@@ -19,13 +19,14 @@ Open terminal and type the below commands
 ```bash
 ifcongif
 ```
-# Copy the ip and replace it (192.168.0.101) with your ip(ex: 10.0.x.x) in topology, create_benign_traffic, create_ddos_traffic files. 
+Copy the ip and replace it (192.168.0.101) with your ip(ex: 10.0.x.x) in topology, create_benign_traffic, create_ddos_traffic files. 
 Run the random forests file to create a trained model 
 
 ```bash
     python3 src/classification/random_forests.py
 ```
 
+This will create the FlowStatsfile.csv with normal and ddos traffic
 # Creates the normal traffic 
 ```bash
   ryu-manager src/controller/collect_benign_traffic.py
@@ -47,26 +48,26 @@ Open another terminal and type
   python3 toplogy create_ddos_traffic.py
 ```
 
-# This will create the FlowStatsfile.csv with normal and ddos traffic
 
-# This command provides the execute permission for the run script
+
+This command provides the execute permission for the run script
 ```bash
  chmod +x ./run.sh
 ```
-# To run the script
+To run the script
 
 ```bash
  ./run.sh
 ```
 Type 1 for running the controller 
 
-# Once the controller starts running 
+Once the controller starts running 
 Open another terminal and run the script again 
 ```bash
  ./run.sh
 ```
 Type 2 for running the mininet topology  
-# For creating normal traffic 
+For creating normal traffic 
 ```bash
  xterm h1_1 
  xterm h1_2 
@@ -79,8 +80,7 @@ Open the second node terminal and type
 ```bash
 ping 10.0.x.x
 ```
- Hping cmds for creating DDOS traffic 
-# Use any of the below cmd to 
+ Use any of the below Hping cmd to create the DDOS traffic
 ```bash
 # icmp flood
 h1_2 hping3 -1 -V -d 120 -w 64 -p 80 --rand-source --flood 10.0.0.4
