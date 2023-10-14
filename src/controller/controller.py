@@ -83,6 +83,10 @@ class FlowMonitor(switch.SimpleSwitch13):
         file0 = open("PredictFlowStatsfile.csv", "w")
         file0.write('timestamp,datapath_id,flow_id,ip_src,tp_src,ip_dst,tp_dst,ip_proto,icmp_code,icmp_type,flow_duration_sec,flow_duration_nsec,idle_timeout,hard_timeout,flags,packet_count,byte_count,packet_count_per_second,packet_count_per_nsecond,byte_count_per_second,byte_count_per_nsecond\n')
         body = ev.msg.body
+        icmp_code = -1
+        icmp_type = -1
+        tp_src = 0
+        tp_dst = 0
 
         for stat in sorted([flow for flow in body if flow.priority == 1],
                            key=lambda flow: (flow.match['eth_type'], flow.match['ipv4_src'], flow.match['ipv4_dst'], flow.match['ip_proto'])):
@@ -117,7 +121,7 @@ class FlowMonitor(switch.SimpleSwitch13):
                 byte_count_per_second = 0
                 byte_count_per_nsecond = 0
 
-            file0.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
+            file0.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
                 timestamp, ev.msg.datapath.id, flow_id, ip_src, tp_src, ip_dst, tp_dst,
                 stat.match['ip_proto'], icmp_code, icmp_type,
                 stat.duration_sec, stat.duration_nsec,
@@ -174,30 +178,20 @@ class FlowMonitor(switch.SimpleSwitch13):
             predict_flow_dataset.iloc[:, 3] = predict_flow_dataset.iloc[:, 3].str.replace('.', '')
             predict_flow_dataset.iloc[:, 5] = predict_flow_dataset.iloc[:, 5].str.replace('.', '')
 
-            X_predict_flow = predict_flow_dataset.iloc[:, :].values
+            X_predict_flow = predict_flow_dataset.iloc[:, [3, 10, 15, 16]].values
             X_predict_flow = X_predict_flow.astype('float64')
-
-            y_flow_pred = self.flow_model.predict(X_predict_flow)
-            trained_model = joblib.load("./random_forest.joblib")
-            res = trained_model.predict(X_predict_flow)
-            print("result: ", res)
-            legitimate_traffic = 0
-            ddos_traffic = 0
-
-            for i in y_flow_pred:
-                if i == 0:
-                    legitimate_traffic += 1
-                else:
-                    ddos_traffic += 1
-                    victim = int(predict_flow_dataset.iloc[i, 5]) % 20
-
+            trained_model = joblib.load("rf_trained_data.joblib")
+            y_flow_pred = trained_model.predict(X_predict_flow)
+  
+            ddos_indices = [i for i, prediction in enumerate(y_flow_pred) if prediction == 1]
             self.logger.info("------------------------------------------------------------------------------")
-            if (legitimate_traffic / len(y_flow_pred) * 100) > 80:
-                self.logger.info("Legitimate Traffic ...")
+            if ddos_indices:
+                self.logger.info("DDoS Traffic Detected:")
+                for i in ddos_indices:
+                    flow_data = predict_flow_dataset.iloc[i]
+                    self.logger.info("Flow index: {}, Flow ID: {}, Victim is host: h{}".format(i, flow_data['flow_id'], int(flow_data['tp_dst']) % 20))
             else:
-                self.logger.info("DDoS Traffic ...")
-                self.logger.info("Victim is host: h{}".format(victim))
-
+                self.logger.info("No DDoS Traffic Detected")
             self.logger.info("------------------------------------------------------------------------------")
 
             file0 = open("PredictFlowStatsfile.csv", "w")
@@ -206,4 +200,5 @@ class FlowMonitor(switch.SimpleSwitch13):
 
         except Exception as e:
             self.logger.error("Error while classifying flows: {}".format(e))
+
 
