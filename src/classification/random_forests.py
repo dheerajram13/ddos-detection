@@ -77,7 +77,6 @@ def main():
     rf_classifier = RandomFClassifier(dataset_path)
     rf_classifier.flow_training()
     # Save the training data
-    # joblib.dump(rf_classifier, "./rf_trained_data.joblib")
     # n_estimators_values = [10, 50, 100]
     n_estimators_values = [100]
     # criterion_values = ['gini', 'entropy']
