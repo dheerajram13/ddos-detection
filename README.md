@@ -2,19 +2,99 @@
 DDOS Detection using ML 
 
 Installation steps:
-* Create an Python env (3.9).
+* Install Virtual Box 
+* Install Mininet VM 
+* Install Ubuntu
+* Install Ryu-controller
+* Git clone this repo 
+* cd ddos_detection 
+* Install Python 
+* Create a Python env (3.9)
 * Install the modules from requirements.txt
-* Download csv from https://rdm.uq.edu.au/files/c31a9f50-ef99-11ed-ab7b-c7846b13c8a9 and save it in  the data folder. (Don't commit this file to github)
+* Download dataset csv from https://drive.google.com/file/d/1OZR9B-PXhgC3aZEraTCv2IIjXGSzkHzN/view?usp=sharing and save it in the data directory.
 
-Todo: 
-* Read data from CSV(from the data folder) using pands, select the features and perform the train, test split. This code is common for all the ML algos so better create a single function or class which can be resuse. 
-* Implement the naive bayes  in the naive_bayes.py file. 
-* Implement SVM and Random forests in the respective files in the classication folder. 
-* Work on the Ryu controller and mininet topology. 
+How to run:
+Open terminal and type the below commands
 
-How to commit: 
-**Don't comit directly to the main branch. 
-Before you commit, create a feature branch from master for example svm_feature and then work on the changes and push to the feature branch. Create a PR from the feature branch and master. 
- 
+```bash
+ifcongif
+```
+# Copy the ip and replace it (192.168.0.101) with your ip(ex: 10.0.x.x) in topology, create_benign_traffic, create_ddos_traffic files. 
+Run the random forests file to create a trained model 
+
+```bash
+    python3 src/classification/random_forests.py
+```
+
+# Creates the normal traffic 
+```bash
+  ryu-manager src/controller/collect_benign_traffic.py
+```
+
+Open another terminal and type 
+```bash
+  python3 toplogy create_benign_traffic.py
+```
+
+# Creates the DDOS traffic 
+```bash
+  ryu-manager src/collect_ddos_traffic.py
+```
+
+Open another terminal and type 
+
+```bash
+  python3 toplogy create_ddos_traffic.py
+```
+
+# This will create the FlowStatsfile.csv with normal and ddos traffic
+
+# This command provides the execute permission for the run script
+```bash
+ chmod +x ./run.sh
+```
+# To run the script
+
+```bash
+ ./run.sh
+```
+Type 1 for running the controller 
+
+# Once the controller starts running 
+Open another terminal and run the script again 
+```bash
+ ./run.sh
+```
+Type 2 for running the mininet topology  
+# For creating normal traffic 
+```bash
+ xterm h1_1 
+ xterm h1_2 
+```
+Open the first node terminal and type 
+```bash
+ifconfig 
+```
+Open the second node terminal and type 
+```bash
+ping 10.0.x.x
+```
+ Hping cmds for creating DDOS traffic 
+# Use any of the below cmd to 
+```bash
+# icmp flood
+h1_2 hping3 -1 -V -d 120 -w 64 -p 80 --rand-source --flood 10.0.0.4
+
+# syn flood
+h2_5 hping3 -S -V -d 120 -w 64 -p 80 --rand-source --flood 10.0.0.6
+
+# udp flood
+h1_3 hping3 -2 -V -d 120 -w 64 -p 80 --rand-source --flood 10.0.0.5
+
+
+
+
+
+
 
 

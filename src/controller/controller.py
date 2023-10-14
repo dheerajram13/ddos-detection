@@ -145,7 +145,7 @@ class FlowMonitor(switch.SimpleSwitch13):
         flow_dataset.iloc[:, 3] = flow_dataset.iloc[:, 3].str.replace('.', '')
         flow_dataset.iloc[:, 5] = flow_dataset.iloc[:, 5].str.replace('.', '')
 
-        X_flow = flow_dataset.iloc[:, :-1].values
+        X_flow = flow_dataset.iloc[:, [3, 10, 15, 16]].values
         X_flow = X_flow.astype('float64')
 
         y_flow = flow_dataset.iloc[:, -1].values

@@ -1,14 +1,13 @@
-echo "Select RUN option: 1. Mininet, 2. Controller, 3. Clear mn workflow"
+echo "Select RUN option: 1. RYU controller, 2. Mininet, 3. Clear mn workflow"
 read CHOICE_INPUT
 case $CHOICE_INPUT in
+
 1)
-    # make sure controller is started
-    echo "Running mininet topology"
-    sudo python3 topology/topology.py ;;
-2)
     echo "Running RYU controller"
-    # ryu-manager --verbose controller/l3_switch.py
-    ryu-manager controller/controller.py ;;
+    ryu-manager src/controller/controller.py ;;
+2)
+    echo "Running mininet topology"
+    sudo python3 src/topology/topology.py ;;
 3)
     echo "Clear the previous mininet workflow"
     sudo mn -c ;;

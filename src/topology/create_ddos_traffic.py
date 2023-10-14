@@ -15,7 +15,7 @@ def ipGenerator():
         str: A randomly generated IP address.
     """
 
-    ip = ".".join(["10", "0", "0", str(randrange(21, 39))])
+    ip = ".".join(["10", "0", "0", str(randrange(1, 19))])
     return ip
 
 def startNetwork():
