@@ -180,16 +180,10 @@ class FlowMonitor(switch.SimpleSwitch13):
 
             X_predict_flow = predict_flow_dataset.iloc[:, [3, 10, 15, 16]].values
             X_predict_flow = X_predict_flow.astype('float64')
-
-            # y_flow_pred = self.flow_model.predict(X_predict_flow)
             trained_model = joblib.load("rf_trained_data.joblib")
             y_flow_pred = trained_model.predict(X_predict_flow)
-            print("result: ", y_flow_pred)
   
             ddos_indices = [i for i, prediction in enumerate(y_flow_pred) if prediction == 1]
-            
-            # print("ddos_indices", ddos_indices)
-            # Log the DDoS predictions
             self.logger.info("------------------------------------------------------------------------------")
             if ddos_indices:
                 self.logger.info("DDoS Traffic Detected:")
@@ -199,29 +193,6 @@ class FlowMonitor(switch.SimpleSwitch13):
             else:
                 self.logger.info("No DDoS Traffic Detected")
             self.logger.info("------------------------------------------------------------------------------")
-            #legitimate_traffic = 0
-            #ddos_traffic = 0
-            
-
-            #for i in y_flow_pred:
-             #   if i == 0:
-               #     legitimate_traffic += 1
-              #  else:
-                #    ddos_traffic += 1
-                 #   victim = int(predict_flow_dataset.iloc[i, 5]) % 20
-
-            self.logger.info("------------------------------------------------------------------------------")
-            
-            #print(legitimate_traffic / len(y_flow_pred) * 100,y_flow_pred,legitimate_traffic,ddos_traffic)
-            #if (legitimate_traffic / len(y_flow_pred) * 100) > 80:
-             #   self.logger.info("DDoS Traffic ...")
-              #  self.logger.info("Victim is host: h{}".format(victim))
-                
-            #else:
-             #   self.logger.info("Legitimate Traffic ...")
-                
-
-            self.logger.info("------------------------------------------------------------------------------")
 
             file0 = open("PredictFlowStatsfile.csv", "w")
             file0.write('timestamp,datapath_id,flow_id,ip_src,tp_src,ip_dst,tp_dst,ip_proto,icmp_code,icmp_type,flow_duration_sec,flow_duration_nsec,idle_timeout,hard_timeout,flags,packet_count,byte_count,packet_count_per_second,packet_count_per_nsecond,byte_count_per_second,byte_count_per_nsecond\n')
@@ -229,4 +200,5 @@ class FlowMonitor(switch.SimpleSwitch13):
 
         except Exception as e:
             self.logger.error("Error while classifying flows: {}".format(e))
+
 
