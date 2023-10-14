@@ -9,8 +9,17 @@ Installation steps:
 * Git clone this repo 
 * cd ddos_detection 
 * Install Python 
-* Create a Python env (3.9)
+* Create a Python env 
+```bash
+    pip install virtualenv
+    virtualenv env 
+    virtualenv -p /usr/bin/python3 env 
+    source virtualenv_name/bin/activate
+```
 * Install the modules from requirements.txt
+```bash
+    pip install -r requirements.txt
+```
 * Download dataset csv from https://drive.google.com/file/d/1OZR9B-PXhgC3aZEraTCv2IIjXGSzkHzN/view?usp=sharing and save it in the data directory.
 
 How to run:
@@ -27,7 +36,7 @@ Run the random forests file to create a trained model
 ```
 
 This will create the FlowStatsfile.csv with normal and ddos traffic
-# Creates the normal traffic 
+Creates the normal traffic 
 ```bash
   ryu-manager src/controller/collect_benign_traffic.py
 ```
@@ -37,7 +46,7 @@ Open another terminal and type
   python3 toplogy create_benign_traffic.py
 ```
 
-# Creates the DDOS traffic 
+Creates the DDOS traffic 
 ```bash
   ryu-manager src/collect_ddos_traffic.py
 ```
