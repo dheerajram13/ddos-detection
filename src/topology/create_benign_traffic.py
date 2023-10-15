@@ -2,7 +2,7 @@ from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.log import setLogLevel
 from mininet.node import RemoteController
-from topology.topology import CustomTopology
+from topology import CustomTopology
 from time import sleep
 from datetime import datetime
 from random import randrange, choice
