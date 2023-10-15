@@ -154,23 +154,7 @@ class FlowMonitor(switch.SimpleSwitch13):
 
         classifier = RandomForestClassifier(n_estimators=100, criterion="entropy", max_depth=20, random_state=0)
         self.flow_model = classifier.fit(X_flow_train, y_flow_train)
-        trained_model = joblib.load("rf_trained_data.joblib")
-        y_flow_pred = trained_model.predict(X_flow_test)
 
-        # y_flow_pred = self.flow_model.predict(X_flow_test)
-
-        self.logger.info("------------------------------------------------------------------------------")
-
-        self.logger.info("Confusion Matrix")
-        cm = confusion_matrix(y_flow_test, y_flow_pred)
-        self.logger.info(cm)
-
-        acc = accuracy_score(y_flow_test, y_flow_pred)
-
-        self.logger.info("Success Accuracy = {0:.2f} %".format(acc * 100))
-        fail = 1.0 - acc
-        self.logger.info("Fail Accuracy = {0:.2f} %".format(fail * 100))
-        self.logger.info("------------------------------------------------------------------------------")
 
     def predict(self):
         try:
