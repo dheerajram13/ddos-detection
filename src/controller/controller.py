@@ -185,13 +185,23 @@ class FlowMonitor(switch.SimpleSwitch13):
             trained_model = joblib.load("rf_trained_data.joblib")
             y_flow_pred = trained_model.predict(X_predict_flow)
   
-            ddos_indices = [i for i, prediction in enumerate(y_flow_pred) if prediction == 1]
             self.logger.info("------------------------------------------------------------------------------")
+            ddos_indices = [i for i, prediction in enumerate(y_flow_pred) if prediction == 1]
+            legitimate_trafic = 0
+            ddos_trafic = 0
+            victim = 0
+            for i in y_flow_pred:
+                if i == 0:
+                    legitimate_trafic = legitimate_trafic + 1
+                else:
+                    ddos_trafic = ddos_trafic + 1
+                    victim = int(predict_flow_dataset.iloc[i, 5])%20
+
             if ddos_indices:
-                self.logger.info("DDoS Traffic Detected:")
-                for i in ddos_indices:
-                    flow_data = predict_flow_dataset.iloc[i]
-                    self.logger.info("Flow index: {}, Flow ID: {}, Victim is host: h{}".format(i, flow_data['flow_id'], int(flow_data['tp_dst']) % 20))
+                self.logger.info("DDoS Traffic Detected")
+                self.logger.info("ddos trafic ...")
+                if victim != 0:
+                    self.logger.info("victim is host: h{}".format(victim))
             else:
                 self.logger.info("No DDoS Traffic Detected")
             self.logger.info("------------------------------------------------------------------------------")
