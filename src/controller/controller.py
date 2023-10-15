@@ -154,7 +154,7 @@ class FlowMonitor(switch.SimpleSwitch13):
 
         classifier = RandomForestClassifier(n_estimators=100, criterion="entropy", max_depth=20, random_state=0)
         self.flow_model = classifier.fit(X_flow_train, y_flow_train)
-
+        y_flow_pred = self.flow_model.predict(X_flow_test)
 
     def predict(self):
         try:
