@@ -29,10 +29,20 @@ Open terminal and type the below commands
 ifcongif
 ```
 Copy the ip and replace it (192.168.0.101) with your ip(ex: 10.0.x.x) in topology, create_benign_traffic, create_ddos_traffic files. 
-Run the random forests file to create a trained model 
+
+To run the ML files use the below commands 
+For random forests, it will generate a trained model file
 
 ```bash
     python3 src/classification/random_forests.py
+```
+
+```bash
+    python3 src/classification/naive_bayes.py
+```
+
+```bash
+    python3 src/classification/svm.py
 ```
 
 This will create the FlowStatsfile.csv with normal and ddos traffic
@@ -43,18 +53,18 @@ Creates the normal traffic
 
 Open another terminal and type 
 ```bash
-  python3 toplogy create_benign_traffic.py
+  python3 src/toplogy/create_benign_traffic.py
 ```
 
 Creates the DDOS traffic 
 ```bash
-  ryu-manager src/collect_ddos_traffic.py
+  ryu-manager src/controller/collect_ddos_traffic.py
 ```
 
 Open another terminal and type 
 
 ```bash
-  python3 toplogy create_ddos_traffic.py
+  python3 src/toplogy/create_ddos_traffic.py
 ```
 
 
