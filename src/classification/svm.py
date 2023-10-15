@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.impute import SimpleImputer
 
 from helpers import DATASET_SIZE
 from datetime import datetime
@@ -18,8 +19,11 @@ class SVMClassifier:
     def flow_training(self):
         print("Flow Training ...")
 
-        X_flow = self.flow_dataset.iloc[:, :-1].values.astype('float64')
+        X_flow = self.flow_dataset.iloc[:, [0, 8, 11, 13]].values.astype('float64')
         y_flow = self.flow_dataset.iloc[:, -1].values
+
+        imputer = SimpleImputer(strategy='mean')
+        X_flow = imputer.fit_transform(X_flow)
 
         X_flow_train, X_flow_test, y_flow_train, y_flow_test = train_test_split(X_flow, y_flow, test_size=0.3, random_state=0)
 
